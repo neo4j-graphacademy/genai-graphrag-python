@@ -4,7 +4,8 @@ import asyncio
 
 schema_extractor = SchemaFromTextExtractor(
     llm=OpenAILLM(
-        model_name="gpt-4"
+        model_name="gpt-4",
+        model_params={"temperature": 0}
     )
 )
 

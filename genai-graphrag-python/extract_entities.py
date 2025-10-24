@@ -19,7 +19,8 @@ Neo4j uses the graph structure to store data and is known as a *labeled property
 
 extractor = LLMEntityRelationExtractor(
     llm=OpenAILLM(
-        model_name="gpt-4"
+        model_name="gpt-4",
+        model_params={"temperature": 0}
     )
 )
 

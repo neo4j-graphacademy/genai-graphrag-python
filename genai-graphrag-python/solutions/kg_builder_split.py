@@ -38,6 +38,7 @@ text_splitter = FixedSizeSplitter(chunk_size=500, chunk_overlap=100)
 kg_builder = SimpleKGPipeline(
     llm=llm,
     driver=neo4j_driver, 
+    neo4j_database=os.getenv("NEO4J_DATABASE"), 
     embedder=embedder, 
     from_pdf=True,
     text_splitter=text_splitter,

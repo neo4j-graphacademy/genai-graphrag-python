@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import asyncio
+import csv
 
 from neo4j import GraphDatabase
 from neo4j_graphrag.llm import OpenAILLM
@@ -30,28 +31,6 @@ embedder = OpenAIEmbeddings(
 
 text_splitter = FixedSizeSplitter(chunk_size=500, chunk_overlap=100)
 
-# tag::simple_nodes[]
-NODE_TYPES = [
-    "Technology",
-    "Concept",
-    "Example",
-    "Process",
-]
-
-kg_builder = SimpleKGPipeline(
-    llm=llm,
-    driver=neo4j_driver, 
-    neo4j_database=os.getenv("NEO4J_DATABASE"), 
-    embedder=embedder, 
-    from_pdf=True,
-    text_splitter=text_splitter,
-    schema={
-        "node_types": NODE_TYPES,
-    },
-)
-# end::simple_nodes[]
-
-# tag::nodes_types[]
 NODE_TYPES = [
     "Technology",
     "Concept",
@@ -68,9 +47,7 @@ NODE_TYPES = [
         ]
     },
 ]
-# end::node_types[]
 
-# tag::relationship_types[]
 RELATIONSHIP_TYPES = [
     "RELATED_TO",
     "PART_OF",
@@ -80,9 +57,7 @@ RELATIONSHIP_TYPES = [
     "LEADS_TO",
     "CITES"
 ]
-# end::relationship_types[]
 
-# tag::patterns[]
 PATTERNS = [
     ("Technology", "RELATED_TO", "Technology"),
     ("Concept", "RELATED_TO", "Technology"),
@@ -94,9 +69,7 @@ PATTERNS = [
     ("Process", "LEADS_TO", "Benefit"),
     ("Resource", "CITES", "Technology"),
 ]
-# end::patterns[]
 
-# tag::kg_builder[]
 kg_builder = SimpleKGPipeline(
     llm=llm,
     driver=neo4j_driver, 
@@ -110,15 +83,48 @@ kg_builder = SimpleKGPipeline(
         "patterns": PATTERNS
     },
 )
-# end::kg_builder[]
 
-# tag::all_documents[]
+# tag::load_csv[]
 data_path = "./genai-graphrag-python/data/"
-pdf_files = [os.path.join(data_path, f) for f in os.listdir(data_path) if f.endswith('.pdf')]
 
-for pdf_file in pdf_files:
+docs_csv = csv.DictReader(
+    open(os.path.join(data_path, "docs.csv"), encoding="utf8", newline='')
+)
+# end::load_csv[]
 
-    print(f"Processing {pdf_file}")
-    result = asyncio.run(kg_builder.run_async(file_path=pdf_file))
-    print(result.result)
-# end::all_documents[]
+# tag::cypher[]
+cypher = """
+MATCH (d:Document {path: $pdf_path})
+MERGE (l:Lesson {url: $url})
+SET l.name = $lesson,
+    l.module = $module,
+    l.course = $course
+MERGE (d)-[:PDF_OF]->(l)
+"""
+# end::cypher[]
+
+for doc in docs_csv:
+
+    # tag::pdf_path[]
+    # Create the complete PDF path
+    doc["pdf_path"] = os.path.join(data_path, doc["filename"])
+    print(f"Processing document: {doc['pdf_path']}")
+    # end::pdf_path[]
+
+    # Entity extraction and KG population
+    result = asyncio.run(
+        kg_builder.run_async(
+            file_path=os.path.join(doc["pdf_path"])
+        )
+    )
+
+    # tag::create_structured_graph[]
+    # Create structured graph
+    records, summary, keys = neo4j_driver.execute_query(
+        cypher,
+        parameters_=doc,
+        database_=os.getenv("NEO4J_DATABASE")
+    )
+    # end::create_structured_graph[]
+    print(result, summary.counters)
+

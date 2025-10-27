@@ -73,6 +73,7 @@ PATTERNS = [
 kg_builder = SimpleKGPipeline(
     llm=llm,
     driver=neo4j_driver, 
+    neo4j_database=os.getenv("NEO4J_DATABASE"), 
     embedder=embedder, 
     from_pdf=True,
     text_splitter=text_splitter,
@@ -92,9 +93,9 @@ docs_csv = csv.DictReader(
 cypher = """
 MATCH (d:Document {path: $pdf_path})
 MERGE (l:Lesson {url: $url})
-SET l.course = $course,
+SET l.name = $lesson,
     l.module = $module,
-    l.lesson = $lesson
+    l.course = $course
 MERGE (d)-[:PDF_OF]->(l)
 """
 
@@ -114,8 +115,8 @@ for doc in docs_csv:
     # Create structured graph
     records, summary, keys = neo4j_driver.execute_query(
         cypher,
-        doc
+        parameters_=doc,
+        database_=os.getenv("NEO4J_DATABASE")
     )
     print(result, summary.counters)
 
-    break

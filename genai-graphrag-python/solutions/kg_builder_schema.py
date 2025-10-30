@@ -51,7 +51,7 @@ kg_builder = SimpleKGPipeline(
 )
 # end::simple_nodes[]
 
-# tag::nodes_types[]
+# tag::node_types[]
 NODE_TYPES = [
     "Technology",
     "Concept",

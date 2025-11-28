@@ -66,8 +66,11 @@ kg_builder = SimpleKGPipeline(
 )
 # end::kg_builder[]
 
+# tag::pdf_file[]
+pdf_file = "./genai-graphrag-python/data/genai-fundamentals_
+# end::pdf_file[]
+
 # tag::run_loader[]
-pdf_file = "./genai-graphrag-python/data/genai-fundamentals_1-generative-ai_1-what-is-genai.pdf"
 doc = asyncio.run(data_loader.run(pdf_file))
 print(doc.text)
 # end::run_loader[]

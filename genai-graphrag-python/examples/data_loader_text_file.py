@@ -69,6 +69,7 @@ doc = asyncio.run(data_loader.run(pdf_file))
 print(doc.text)
 # end::run_loader[]
 
+pdf_file = "./genai-graphrag-python/data/genai-fundamentals_1-generative-ai_1-what-is-genai.txt"
 print(f"Processing {pdf_file}")
 result = asyncio.run(kg_builder.run_async(file_path=pdf_file))
 print(result.result)

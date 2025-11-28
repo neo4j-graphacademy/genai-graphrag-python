@@ -112,6 +112,10 @@ kg_builder = SimpleKGPipeline(
 )
 # end::kg_builder[]
 
+pdf_file = "./genai-graphrag-python/data/genai-fundamentals_1-generative-ai_1-what-is-genai.pdf"
+result = asyncio.run(kg_builder.run_async(file_path=pdf_file))
+print(result.result)
+
 # tag::all_documents[]
 data_path = "./genai-graphrag-python/data/"
 pdf_files = [os.path.join(data_path, f) for f in os.listdir(data_path) if f.endswith('.pdf')]

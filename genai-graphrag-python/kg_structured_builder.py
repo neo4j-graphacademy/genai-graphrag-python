@@ -18,11 +18,7 @@ neo4j_driver = GraphDatabase.driver(
 neo4j_driver.verify_connectivity()
 
 llm = OpenAILLM(
-    model_name="gpt-4o",
-    model_params={
-        "temperature": 0,
-        "response_format": {"type": "json_object"},
-    }
+    model_name="gpt-5.2"
 )
 
 embedder = OpenAIEmbeddings(
@@ -37,13 +33,13 @@ NODE_TYPES = [
     "Example",
     "Process",
     "Challenge",
-    {"label": "Benefit", "description": "A benefit or advantage of using a technology or approach."},
+    "Benefit",
     {
         "label": "Resource",
         "description": "A related learning resource such as a book, article, video, or course.",
         "properties": [
             {"name": "name", "type": "STRING", "required": True}, 
-            {"name": "type", "type": "STRING"}
+            {"name": "link", "type": "STRING"}
         ]
     },
 ]

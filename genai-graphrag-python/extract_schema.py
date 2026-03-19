@@ -7,10 +7,10 @@ from neo4j_graphrag.llm import OpenAILLM
 import asyncio
 
 schema_extractor = SchemaFromTextExtractor(
-    llm=OpenAILLM(
-        model_name="gpt-4",
-        model_params={"temperature": 0}
-    )
+    llm = OpenAILLM(
+        model_name="gpt-5-nano",
+    ),
+    use_structured_output=True,
 )
 
 text = """

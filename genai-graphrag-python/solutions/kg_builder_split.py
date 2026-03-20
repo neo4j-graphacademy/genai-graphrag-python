@@ -19,10 +19,9 @@ neo4j_driver = GraphDatabase.driver(
 neo4j_driver.verify_connectivity()
 
 llm = OpenAILLM(
-    model_name="gpt-4o",
+    model_name="gpt-5-nano",
     model_params={
-        "temperature": 0,
-        "response_format": {"type": "json_object"},
+        "reasoning_effort": "minimal"
     }
 )
 

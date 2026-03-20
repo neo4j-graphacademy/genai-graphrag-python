@@ -17,8 +17,7 @@ driver = GraphDatabase.driver(
 )
 
 llm = OpenAILLM(
-    model_name="gpt-4o", 
-    model_params={"temperature": 0}
+    model_name="gpt-5.2"
 )
 
 # Cypher examples as input/query pairs

@@ -19,10 +19,9 @@ neo4j_driver.verify_connectivity()
 
 # tag::llm[]
 llm = OpenAILLM(
-    model_name="gpt-4o",
+    model_name="gpt-5-nano",
     model_params={
-        "temperature": 0,
-        "response_format": {"type": "json_object"},
+        "reasoning_effort": "minimal"
     }
 )
 # end::llm[]
@@ -50,7 +49,7 @@ print(result.result)
 # end::run_one_doc[]
 
 # tag::run_multiple_docs[]
-data_path = "./data/"
+data_path = "./genai-graphrag-python/data/"
 pdf_files = [os.path.join(data_path, f) for f in os.listdir(data_path) if f.endswith('.pdf')]
 
 for pdf_file in pdf_files:

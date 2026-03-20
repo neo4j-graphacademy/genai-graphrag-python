@@ -17,8 +17,7 @@ driver = GraphDatabase.driver(
 )
 
 llm = OpenAILLM(
-    model_name="gpt-4o", 
-    model_params={"temperature": 0}
+    model_name="gpt-5.2"
 )
 
 # tag::examples[]
@@ -64,6 +63,6 @@ driver.close()
 query_text = "How many technologies are mentioned in the knowledge graph?"
 query_text = "How does Neo4j relate to other technologies?"
 query_text = "What entities exist in the knowledge graph?" 
-query_text = "Which lessons cover Generative AI concepts?"
+query_text = "What resource urls are referenced?"
 # end::example_queries[]
 """

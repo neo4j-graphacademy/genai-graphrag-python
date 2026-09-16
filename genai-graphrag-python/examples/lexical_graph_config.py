@@ -10,7 +10,7 @@ from neo4j_graphrag.embeddings import OpenAIEmbeddings
 from neo4j_graphrag.experimental.pipeline.kg_builder import SimpleKGPipeline
 
 # tag::import_config[]
-from neo4j_graphrag.experimental.components.types import LexicalGraphConfig
+from neo4j_graphrag.components.types import LexicalGraphConfig
 # end::import_config[]
 
 neo4j_driver = GraphDatabase.driver(
@@ -47,7 +47,7 @@ kg_builder = SimpleKGPipeline(
     driver=neo4j_driver, 
     neo4j_database=os.getenv("NEO4J_DATABASE"), 
     embedder=embedder, 
-    from_pdf=True,
+    from_file=True,
     lexical_graph_config=config,
 )
 # end::kg_builder[]

@@ -11,11 +11,18 @@ from neo4j_graphrag.experimental.pipeline.kg_builder import SimpleKGPipeline
 
 # tag::import_loader[]
 # You will need to install the wikipedia package: pip install wikipedia
-from neo4j_graphrag.experimental.components.pdf_loader import DataLoader, PdfDocument, DocumentInfo
+from neo4j_graphrag.components.pdf_loader import DataLoader
+from neo4j_graphrag.components.types import PdfDocument, DocumentInfo
 from pathlib import Path
+from typing import Dict, Optional
 import wikipedia
 from urllib.parse import quote
 # end::import_loader[]
+
+# Wikipedia now requires a descriptive User-Agent on API requests, or it returns a 403
+wikipedia.set_user_agent(
+    "genai-graphrag-python-course/1.0 (https://graphacademy.neo4j.com/courses/genai-graphrag-python)"
+)
 
 neo4j_driver = GraphDatabase.driver(
     os.getenv("NEO4J_URI"),
@@ -36,7 +43,7 @@ embedder = OpenAIEmbeddings(
 
 # tag::loader[]
 class WikipediaLoader(DataLoader):
-    async def run(self, filepath: Path) -> PdfDocument:
+    async def run(self, filepath: Path, metadata: Optional[Dict[str, str]] = None) -> PdfDocument:
 
         # Load the Wikipedia page
         page = wikipedia.page(filepath)
@@ -47,6 +54,7 @@ class WikipediaLoader(DataLoader):
             document_info=DocumentInfo(
                 path=str(filepath),
                 metadata={
+                    **(metadata or {}),
                     "url": f"https://en.wikipedia.org/w/index.php?title={quote(page.title)}",
                 }
             )
@@ -61,8 +69,8 @@ kg_builder = SimpleKGPipeline(
     driver=neo4j_driver, 
     neo4j_database=os.getenv("NEO4J_DATABASE"), 
     embedder=embedder, 
-    from_pdf=True,
-    pdf_loader=data_loader
+    from_file=True,
+    file_loader=data_loader
 )
 # end::kg_builder[]
 

@@ -48,7 +48,7 @@ kg_builder = SimpleKGPipeline(
     driver=neo4j_driver, 
     neo4j_database=os.getenv("NEO4J_DATABASE"), 
     embedder=embedder, 
-    from_pdf=True,
+    from_file=True,
     prompt_template=prompt_template,
 )
 # end::kg_builder[]

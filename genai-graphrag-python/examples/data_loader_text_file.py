@@ -10,8 +10,10 @@ from neo4j_graphrag.embeddings import OpenAIEmbeddings
 from neo4j_graphrag.experimental.pipeline.kg_builder import SimpleKGPipeline
 
 # tag::import_loader[]
-from neo4j_graphrag.experimental.components.pdf_loader import DataLoader, PdfDocument, DocumentInfo
+from neo4j_graphrag.components.pdf_loader import DataLoader
+from neo4j_graphrag.components.types import PdfDocument, DocumentInfo
 from pathlib import Path
+from typing import Dict, Optional
 # end::import_loader[]
 
 neo4j_driver = GraphDatabase.driver(
@@ -33,18 +35,18 @@ embedder = OpenAIEmbeddings(
 
 # tag::loader[]
 class TextLoader(DataLoader):
-    async def run(self, filepath: Path) -> PdfDocument:
+    async def run(self, filepath: Path, metadata: Optional[Dict[str, str]] = None) -> PdfDocument:
 
         # Process the file
         with open(filepath, 'r', encoding='utf-8') as f:
             text = f.read()
-        
+
         # Return a PdfDocument
         return PdfDocument(
             text=text,
             document_info=DocumentInfo(
                 path=str(filepath),
-                metadata={}
+                metadata=metadata or {}
             )
         )
     
@@ -57,8 +59,8 @@ kg_builder = SimpleKGPipeline(
     driver=neo4j_driver, 
     neo4j_database=os.getenv("NEO4J_DATABASE"), 
     embedder=embedder, 
-    from_pdf=True,
-    pdf_loader=data_loader
+    from_file=True,
+    file_loader=data_loader
 )
 # end::kg_builder[]
 

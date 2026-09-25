@@ -10,8 +10,8 @@ from neo4j_graphrag.embeddings import OpenAIEmbeddings
 from neo4j_graphrag.experimental.pipeline.kg_builder import SimpleKGPipeline
 
 # tag::import_splitter[]
-from neo4j_graphrag.experimental.components.text_splitters.base import TextSplitter
-from neo4j_graphrag.experimental.components.types import TextChunk, TextChunks
+from neo4j_graphrag.components.text_splitters.base import TextSplitter
+from neo4j_graphrag.components.types import TextChunk, TextChunks
 # end::import_splitter[]
 
 neo4j_driver = GraphDatabase.driver(
@@ -84,7 +84,7 @@ kg_builder = SimpleKGPipeline(
     driver=neo4j_driver, 
     neo4j_database=os.getenv("NEO4J_DATABASE"), 
     embedder=embedder,
-    from_pdf=True,
+    from_file=True,
     text_splitter=splitter,
 )
 # end::kg_builder[]

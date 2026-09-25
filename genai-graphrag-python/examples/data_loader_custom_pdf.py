@@ -10,7 +10,8 @@ from neo4j_graphrag.embeddings import OpenAIEmbeddings
 from neo4j_graphrag.experimental.pipeline.kg_builder import SimpleKGPipeline
 
 # tag::import_loader[]
-from neo4j_graphrag.experimental.components.pdf_loader import PdfLoader, PdfDocument
+from neo4j_graphrag.components.data_loader import PdfLoader
+from neo4j_graphrag.components.types import LoadedDocument
 
 import re
 from fsspec import AbstractFileSystem
@@ -42,7 +43,7 @@ class CustomPDFLoader(PdfLoader):
         filepath: Union[str, Path],
         metadata: Optional[Dict[str, str]] = None,
         fs: Optional[Union[AbstractFileSystem, str]] = None,
-    ) -> PdfDocument:
+    ) -> LoadedDocument:
         pdf_document = await super().run(filepath, metadata, fs)
 
         # Process the PDF document
@@ -60,8 +61,8 @@ kg_builder = SimpleKGPipeline(
     driver=neo4j_driver, 
     neo4j_database=os.getenv("NEO4J_DATABASE"), 
     embedder=embedder, 
-    from_pdf=True,
-    pdf_loader=data_loader
+    from_file=True,
+    file_loader=data_loader
 )
 # end::kg_builder[]
 

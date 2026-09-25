@@ -10,8 +10,8 @@ from neo4j_graphrag.embeddings import OpenAIEmbeddings
 from neo4j_graphrag.experimental.pipeline.kg_builder import SimpleKGPipeline
 
 # tag::import_loader[]
-from neo4j_graphrag.components.pdf_loader import DataLoader
-from neo4j_graphrag.components.types import PdfDocument, DocumentInfo
+from neo4j_graphrag.components.data_loader import DataLoader
+from neo4j_graphrag.components.types import LoadedDocument, DocumentInfo
 from pathlib import Path
 from typing import Dict, Optional
 # end::import_loader[]
@@ -35,14 +35,14 @@ embedder = OpenAIEmbeddings(
 
 # tag::loader[]
 class TextLoader(DataLoader):
-    async def run(self, filepath: Path, metadata: Optional[Dict[str, str]] = None) -> PdfDocument:
+    async def run(self, filepath: Path, metadata: Optional[Dict[str, str]] = None) -> LoadedDocument:
 
         # Process the file
         with open(filepath, 'r', encoding='utf-8') as f:
             text = f.read()
 
-        # Return a PdfDocument
-        return PdfDocument(
+        # Return a LoadedDocument
+        return LoadedDocument(
             text=text,
             document_info=DocumentInfo(
                 path=str(filepath),

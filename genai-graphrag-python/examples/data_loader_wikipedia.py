@@ -11,8 +11,8 @@ from neo4j_graphrag.experimental.pipeline.kg_builder import SimpleKGPipeline
 
 # tag::import_loader[]
 # You will need to install the wikipedia package: pip install wikipedia
-from neo4j_graphrag.components.pdf_loader import DataLoader
-from neo4j_graphrag.components.types import PdfDocument, DocumentInfo
+from neo4j_graphrag.components.data_loader import DataLoader
+from neo4j_graphrag.components.types import LoadedDocument, DocumentInfo
 from pathlib import Path
 from typing import Dict, Optional
 import wikipedia
@@ -43,13 +43,13 @@ embedder = OpenAIEmbeddings(
 
 # tag::loader[]
 class WikipediaLoader(DataLoader):
-    async def run(self, filepath: Path, metadata: Optional[Dict[str, str]] = None) -> PdfDocument:
+    async def run(self, filepath: Path, metadata: Optional[Dict[str, str]] = None) -> LoadedDocument:
 
         # Load the Wikipedia page
         page = wikipedia.page(filepath)
 
-        # Return a PdfDocument
-        return PdfDocument(
+        # Return a LoadedDocument
+        return LoadedDocument(
             text=page.content,
             document_info=DocumentInfo(
                 path=str(filepath),
